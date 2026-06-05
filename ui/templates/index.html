@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Transcript Summarizer{% endblock %}
+{% block content %}
+<section class="dashboard">
+  <div class="upload-zone" id="dropZone">
+    <input id="fileInput" type="file" accept="audio/*,video/*" hidden>
+    <button class="primary" id="chooseFile" type="button">Choose file</button>
+    <p>Drop audio or video here</p>
+    <progress id="uploadProgress" value="0" max="100"></progress>
+  </div>
+  <div class="stats" id="stats">
+    <span>Pending <strong data-stat="pending">0</strong></span>
+    <span>Running <strong data-stat="running">0</strong></span>
+    <span>Done <strong data-stat="done">0</strong></span>
+  </div>
+</section>
+<section>
+  <h1>Recent Jobs</h1>
+  <table class="jobs-table">
+    <thead><tr><th>Status</th><th>Filename</th><th>Duration</th><th>Created</th></tr></thead>
+    <tbody id="jobsTable">
+    {% for job in jobs %}
+      <tr>
+        <td><span class="badge {{ job.status }}">{{ job.status }}</span></td>
+        <td><a href="/jobs/{{ job.id }}">{{ job.filename }}</a></td>
+        <td>{{ "%.1f"|format(job.duration or 0) }}s</td>
+        <td>{{ job.created_at }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+

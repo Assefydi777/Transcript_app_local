@@ -1,0 +1,13 @@
+{
+  "title": "Transcript App",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {"type": "timeseries", "title": "Jobs per hour", "targets": [{"expr": "sum(rate(jobs_total[1h]))"}], "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}},
+    {"type": "timeseries", "title": "Average transcription time by model", "targets": [{"expr": "rate(transcription_duration_seconds_sum[5m]) / rate(transcription_duration_seconds_count[5m])"}], "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8}},
+    {"type": "timeseries", "title": "Ollama latency p50/p95", "targets": [{"expr": "histogram_quantile(0.5, rate(ollama_request_duration_seconds_bucket[5m]))"}, {"expr": "histogram_quantile(0.95, rate(ollama_request_duration_seconds_bucket[5m]))"}], "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8}},
+    {"type": "stat", "title": "Worker queue depth", "targets": [{"expr": "transcript_queue_depth"}], "gridPos": {"x": 12, "y": 8, "w": 6, "h": 8}},
+    {"type": "timeseries", "title": "Error rate", "targets": [{"expr": "sum(rate(jobs_total{status=\"failed\"}[5m]))"}], "gridPos": {"x": 18, "y": 8, "w": 6, "h": 8}}
+  ]
+}
+

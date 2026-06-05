@@ -1,0 +1,78 @@
+services:
+  app:
+    restart: unless-stopped
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - ./data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "python", "scripts/healthcheck.py", "--quick"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  worker:
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 6G
+    healthcheck:
+      test: ["CMD", "python", "-c", "import redis, os; r=redis.Redis.from_url(os.getenv('REDIS_URL','redis://redis:6379/0')); assert r.ping()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  ollama:
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - app
+    networks:
+      - transcript_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  prometheus:
+    restart: unless-stopped
+
+  grafana:
+    restart: unless-stopped
+

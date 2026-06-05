@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Job · Transcript Summarizer{% endblock %}
+{% block content %}
+<section class="job-head" data-job-id="{{ job_id }}">
+  <div>
+    <h1>{{ job.filename if job else job_id }}</h1>
+    <span id="jobStatus" class="badge {{ job.status if job else 'pending' }}">{{ job.status if job else 'pending' }}</span>
+  </div>
+  <progress id="jobProgress" value="{{ job.progress if job else 0 }}" max="100"></progress>
+</section>
+<section class="split">
+  <article>
+    <h2>Transcript</h2>
+    <div id="transcript" class="transcript"></div>
+  </article>
+  <article>
+    <h2>Summary</h2>
+    <div id="summary" class="summary"></div>
+  </article>
+</section>
+{% endblock %}
+
