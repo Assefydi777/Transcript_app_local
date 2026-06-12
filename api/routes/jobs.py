@@ -50,7 +50,7 @@ async def upload_job(file: Annotated[UploadFile, File()], session: Annotated[Asy
     session.add(Job(id=job_id, filename=safe_name, source_path=str(target), status="pending", progress=0))
     await session.commit()
     queue = Queue("transcripts", connection=redis.Redis.from_url(settings.redis_url))
-    queue.enqueue(process_job, job_id, str(target), job_id=job_id)
+    queue.enqueue(process_job, job_id, str(target), job_id=job_id, job_timeout=settings.job_timeout_seconds)
     return {"job_id": job_id, "status": "pending"}
 
 
@@ -136,4 +136,3 @@ async def stream_job(job_id: str, session: Annotated[AsyncSession, Depends(get_s
             await asyncio.sleep(2)
 
     return StreamingResponse(events(), media_type="text/event-stream")
-

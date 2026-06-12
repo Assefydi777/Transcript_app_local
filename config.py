@@ -27,6 +27,7 @@ class Settings:
     secret_key: str = os.getenv("SECRET_KEY", "dev-secret-change-me")
     allowed_hosts: list[str] = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "*").split(",") if h.strip()]
     worker_concurrency: int = int(os.getenv("WORKER_CONCURRENCY", "1"))
+    job_timeout_seconds: int = int(os.getenv("JOB_TIMEOUT_SECONDS", "14400"))
     chunk_seconds: int = int(os.getenv("CHUNK_SECONDS", "30"))
     chunk_overlap_seconds: int = int(os.getenv("CHUNK_OVERLAP_SECONDS", "1"))
     max_prompt_tokens: int = int(os.getenv("MAX_PROMPT_TOKENS", "3000"))
@@ -41,4 +42,3 @@ def get_settings() -> Settings:
     (settings.data_dir / "incoming").mkdir(parents=True, exist_ok=True)
     (settings.data_dir / "work").mkdir(parents=True, exist_ok=True)
     return settings
-

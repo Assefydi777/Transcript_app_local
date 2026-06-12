@@ -25,7 +25,7 @@ async def enqueue_file(path: Path) -> str:
         session.add(Job(id=job_id, filename=path.name, source_path=str(path), status="pending", progress=0))
         await session.commit()
     queue = Queue("transcripts", connection=redis.Redis.from_url(settings.redis_url))
-    queue.enqueue(process_job, job_id, str(path), job_id=job_id)
+    queue.enqueue(process_job, job_id, str(path), job_id=job_id, job_timeout=settings.job_timeout_seconds)
     return job_id
 
 
@@ -52,4 +52,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
