@@ -38,6 +38,23 @@ def _split_by_tokens(lines: list[str], max_tokens: int) -> list[str]:
     current_tokens = 0
     for line in lines:
         line_tokens = count_tokens(line)
+        if line_tokens > max_tokens:
+            if current:
+                chunks.append("\n".join(current))
+                current = []
+                current_tokens = 0
+            words = line.split()
+            word_buffer: list[str] = []
+            for word in words:
+                candidate = " ".join([*word_buffer, word])
+                if word_buffer and count_tokens(candidate) > max_tokens:
+                    chunks.append(" ".join(word_buffer))
+                    word_buffer = [word]
+                else:
+                    word_buffer.append(word)
+            if word_buffer:
+                chunks.append(" ".join(word_buffer))
+            continue
         if current and current_tokens + line_tokens > max_tokens:
             chunks.append("\n".join(current))
             current = []
@@ -68,4 +85,3 @@ def build_prompt_plan(segments: list[dict[str, object]], max_tokens: int | None 
         "{chunk_summaries}"
     )
     return PromptPlan(prompts=prompts, reduce_prompt=reduce_prompt, map_reduce=True)
-

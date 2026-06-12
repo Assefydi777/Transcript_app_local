@@ -7,6 +7,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      PYTHONPATH: /app
     volumes:
       - ./data:/data
       - .:/app
@@ -23,6 +25,7 @@ services:
     env_file:
       - .env
     environment:
+      PYTHONPATH: /app
       WORKER_CONCURRENCY: "2"
     volumes:
       - ./data:/data
@@ -48,13 +51,13 @@ services:
       - "11434:11434"
     volumes:
       - ollama_models:/root/.ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # deploy:
+    #   resources:
+        # reservations:
+        #   devices:
+        #     - driver: nvidia
+        #       count: all
+        #       capabilities: [gpu]
     networks:
       - transcript_net
 
@@ -86,4 +89,3 @@ volumes:
   redis_data:
   ollama_models:
   grafana_data:
-
