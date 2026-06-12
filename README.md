@@ -12,6 +12,19 @@ docker compose exec worker python scripts/seed_models.py --whisper-model base --
 docker compose exec app python scripts/healthcheck.py
 ```
 
+## For local use edit env to pull simple models
+WHISPER_MODEL=base
+WHISPER_DEVICE=cpu
+WHISPER_COMPUTE_TYPE=int8
+OLLAMA_MODEL=qwen2.5:3b
+ </br>
+also change the following command to model of your choice
+
+```bash
+docker compose exec worker python scripts/seed_models.py --whisper-model base --ollama-model llama3.2
+```
+## Open thru web
+
 Open `http://localhost:8000`.
 
 ## Services
@@ -32,5 +45,5 @@ Production scripts live in `scripts/deploy/`. Run `setup_server.sh` once on Ubun
 
 ## Notes
 
-Use `WHISPER_MODEL=base` for first local tests. Use `ENABLE_DIARIZATION=true` only after setting `HF_TOKEN`.
+Use `WHISPER_MODEL=base` for first local tests. Use `ENABLE_DIARIZATION=true` only after setting `HF_TOKEN`. 
 
